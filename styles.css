@@ -1,0 +1,577 @@
+:root {
+  --bg: #05070d;
+  --ink: #e8eeff;
+  --muted: #7c8bb5;
+  --line: rgba(140, 170, 255, 0.14);
+  --accent: #2ee6ff;
+  --accent-2: #c46bff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(1100px 700px at 50% -15%, #1b2750 0%, rgba(10, 14, 26, 0) 60%),
+    radial-gradient(900px 600px at 100% 110%, rgba(196, 107, 255, 0.16) 0%, rgba(5, 7, 13, 0) 55%),
+    #05070d;
+  overflow: hidden;
+  overscroll-behavior: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.app {
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: max(10px, env(safe-area-inset-top));
+  padding-bottom: max(8px, env(safe-area-inset-bottom));
+}
+
+/* ---------- top bar ---------- */
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 max(14px, env(safe-area-inset-left)) 0 max(14px, env(safe-area-inset-right));
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.24em;
+  color: #a9bcff;
+  white-space: nowrap;
+}
+
+.brand::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  box-shadow: 0 0 12px rgba(46, 230, 255, 0.8);
+}
+
+.stats {
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 2.4vw, 22px);
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.15;
+  min-width: 34px;
+}
+
+.stat .label {
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.stat strong {
+  font-variant-numeric: tabular-nums;
+  font-size: clamp(13px, 2.6vw, 17px);
+  color: #fff;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.icon-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  border: 1px solid rgba(160, 185, 255, 0.18);
+  background: rgba(255, 255, 255, 0.04);
+  color: #dfe8ff;
+  font-size: 13px;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.icon-btn:hover {
+  background: rgba(255, 255, 255, 0.09);
+}
+
+#btn-undo:not(:disabled) {
+  color: #9be8ff;
+  border-color: rgba(46, 230, 255, 0.42);
+}
+
+#btn-undo:disabled {
+  opacity: 0.28;
+  cursor: default;
+}
+
+/* ---------- playfield ---------- */
+
+.playfield {
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 0 max(14px, env(safe-area-inset-left)) 0 max(14px, env(safe-area-inset-right));
+}
+
+.rail {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 124px;
+  flex: none;
+  justify-content: center;
+}
+
+.box {
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.02));
+  padding: 7px;
+}
+
+.box h2 {
+  margin: 0 0 4px;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 700;
+  text-align: center;
+}
+
+.box canvas {
+  display: block;
+  width: 100%;
+}
+
+#hold-canvas {
+  height: 62px;
+}
+
+#next-canvas {
+  height: 188px;
+}
+
+.hint {
+  margin: 0;
+  text-align: center;
+  font-size: 10px;
+  line-height: 1.5;
+  color: rgba(124, 139, 181, 0.8);
+}
+
+.board-shell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.board-wrap {
+  position: relative;
+  flex: none;
+  border-radius: 14px;
+  touch-action: none;
+}
+
+#board {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  background: #070a14;
+  box-shadow:
+    0 0 0 1px rgba(140, 170, 255, 0.22),
+    0 0 42px rgba(46, 230, 255, 0.13),
+    0 24px 60px rgba(0, 0, 0, 0.55);
+}
+
+/* ---------- overlay ---------- */
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  border-radius: 12px;
+  background: rgba(6, 9, 17, 0.86);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  text-align: center;
+}
+
+body[data-status="playing"] .overlay {
+  display: none;
+}
+
+.overlay-card {
+  max-width: 280px;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.overlay-card h1 {
+  margin: 0;
+  font-size: clamp(26px, 8vw, 40px);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  background: linear-gradient(120deg, #fff 10%, #9fd7ff 55%, #c9a4ff 95%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.ov-text {
+  margin: 10px 0 18px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #b9c6ea;
+}
+
+.btn {
+  border: 0;
+  border-radius: 999px;
+  padding: 13px 30px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #04121a;
+  background: linear-gradient(120deg, #2ee6ff, #9be8ff 60%, #c46bff);
+  box-shadow: 0 10px 30px rgba(46, 230, 255, 0.28);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.ov-foot {
+  margin: 16px 0 0;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(124, 139, 181, 0.9);
+}
+
+/* ---------- touch controls ---------- */
+
+.touch-pad {
+  display: none;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 0 max(12px, env(safe-area-inset-left)) 0 max(12px, env(safe-area-inset-right));
+}
+
+.touch-group {
+  display: flex;
+  gap: 8px;
+}
+
+.tbtn {
+  min-width: 58px;
+  height: 56px;
+  padding: 0 10px;
+  border-radius: 16px;
+  border: 1px solid rgba(160, 185, 255, 0.2);
+  background: linear-gradient(180deg, rgba(38, 52, 90, 0.95), rgba(16, 23, 42, 0.95));
+  color: #e2ebff;
+  font: inherit;
+  font-size: 17px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  touch-action: none;
+}
+
+.tbtn.small {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.tbtn.on {
+  background: linear-gradient(180deg, rgba(46, 230, 255, 0.32), rgba(46, 230, 255, 0.14));
+  border-color: rgba(46, 230, 255, 0.7);
+  color: #fff;
+  transform: scale(0.96);
+}
+
+/* ---------- status bar ---------- */
+
+.statusbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 max(16px, env(safe-area-inset-left)) 0 max(16px, env(safe-area-inset-right));
+  font-size: 11px;
+  color: var(--muted);
+  min-height: 16px;
+}
+
+.pad-status {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+}
+
+.pad-status #pad-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 42vw;
+}
+
+.pad-status .dot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #39435f;
+}
+
+.pad-status.online {
+  color: #8ff0c0;
+}
+
+.pad-status.online .dot {
+  background: #43e37a;
+  box-shadow: 0 0 9px rgba(67, 227, 122, 0.9);
+}
+
+.tip {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.tip-touch {
+  display: none;
+}
+
+/* ---------- device adaptations ---------- */
+
+@media (hover: none) and (pointer: coarse) {
+  .touch-pad {
+    display: flex;
+  }
+
+  /* Larger hit area for the small header buttons without changing layout. */
+  .icon-btn {
+    position: relative;
+  }
+
+  .icon-btn::after {
+    content: "";
+    position: absolute;
+    inset: -4px;
+  }
+
+  .tip-keys {
+    display: none;
+  }
+
+  .tip-touch {
+    display: inline;
+  }
+
+  .hint {
+    display: none;
+  }
+}
+
+/* Same treatment once a real touch is detected (covers browsers that report
+   a fine pointer on touch devices). */
+body.touch .touch-pad {
+  display: flex;
+}
+
+body.touch .tip-keys,
+body.touch .hint {
+  display: none;
+}
+
+body.touch .tip-touch {
+  display: inline;
+}
+
+@media (max-width: 780px) {
+  .app {
+    gap: 8px;
+  }
+
+  .playfield {
+    gap: 8px;
+  }
+
+  .rail {
+    width: 84px;
+    gap: 7px;
+  }
+
+  #hold-canvas {
+    height: 46px;
+  }
+
+  #next-canvas {
+    height: 100px;
+  }
+
+  .stat-best {
+    display: none;
+  }
+}
+
+@media (max-width: 420px) {
+  .brand {
+    font-size: 11px;
+    letter-spacing: 0.16em;
+  }
+
+  .icon-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+  }
+
+  .tbtn {
+    min-width: 52px;
+    height: 52px;
+  }
+
+  .statusbar {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 360px) {
+  /* Very narrow phones: drop the decorative wordmark and tighten the pads so
+     the stats and all three header buttons still fit. */
+  .brand {
+    display: none;
+  }
+
+  .stats {
+    gap: 6px;
+  }
+
+  .tbtn {
+    min-width: 44px;
+    height: 48px;
+    padding: 0 8px;
+  }
+
+  .touch-pad,
+  .touch-group {
+    gap: 6px;
+  }
+}
+
+@media (max-height: 560px) {
+  .app {
+    gap: 6px;
+  }
+
+  .topbar {
+    padding-top: 0;
+  }
+
+  .tbtn {
+    height: 46px;
+    min-width: 48px;
+  }
+
+  .touch-pad {
+    gap: 6px;
+  }
+
+  #hold-canvas {
+    height: 40px;
+  }
+
+  #next-canvas {
+    height: 40px;
+  }
+
+  .statusbar {
+    display: none;
+  }
+}
+
+/* Landscape phones: lift the thumb pads out of the layout so the board keeps
+   the full viewport height; they sit in the empty space beside the board. */
+@media (orientation: landscape) and (max-height: 560px) {
+  .touch-pad {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 0 max(14px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left));
+    justify-content: space-between;
+    pointer-events: none;
+  }
+
+  .touch-group {
+    pointer-events: auto;
+  }
+
+  .tbtn {
+    height: 50px;
+    min-width: 56px;
+  }
+
+  #hold-canvas {
+    height: 46px;
+  }
+
+  #next-canvas {
+    height: 112px;
+  }
+}

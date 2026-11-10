@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+<meta name="theme-color" content="#080b14" />
+<meta name="description" content="Tetris with keyboard, touch and gamepad controls." />
+<title>Tetris — keyboard, touch &amp; controller</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body data-status="ready">
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">TETRIS</div>
+
+      <div class="stats">
+        <div class="stat"><span class="label">Score</span><strong id="score">0</strong></div>
+        <div class="stat"><span class="label">Lines</span><strong id="lines">0</strong></div>
+        <div class="stat"><span class="label">Level</span><strong id="level">1</strong></div>
+        <div class="stat stat-best"><span class="label">Best</span><strong id="best">0</strong></div>
+      </div>
+
+      <div class="actions">
+        <button id="btn-undo" class="icon-btn" type="button" aria-label="Undo last placement" title="Undo last placement (B)" disabled>↶</button>
+        <button id="btn-pause" class="icon-btn" type="button" aria-label="Pause">❙❙</button>
+        <button id="btn-sound" class="icon-btn" type="button" aria-label="Toggle sound">🔊</button>
+      </div>
+    </header>
+
+    <main class="playfield">
+      <aside class="rail">
+        <section class="box">
+          <h2>Hold</h2>
+          <canvas id="hold-canvas"></canvas>
+        </section>
+        <section class="box">
+          <h2>Next</h2>
+          <canvas id="next-canvas"></canvas>
+        </section>
+        <p class="hint">C / Shift<br />holds piece</p>
+      </aside>
+
+      <div class="board-shell" id="board-shell">
+        <div class="board-wrap" id="board-wrap">
+          <canvas id="board" aria-label="Tetris board"></canvas>
+          <div class="overlay" id="overlay">
+            <div class="overlay-card">
+              <p class="eyebrow" id="ov-eyebrow">Ready</p>
+              <h1 id="ov-title">Tetris</h1>
+              <p class="ov-text" id="ov-text">Clear lines. Don't top out.</p>
+              <button class="btn" id="ov-btn" type="button">Play</button>
+              <p class="ov-foot" id="ov-foot">Keyboard · touch · controller</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <nav class="touch-pad" id="touch-pad" aria-label="Touch controls">
+      <div class="touch-group">
+        <button class="tbtn" type="button" data-act="left" aria-label="Move left">◀</button>
+        <button class="tbtn" type="button" data-act="down" aria-label="Soft drop">▼</button>
+        <button class="tbtn" type="button" data-act="right" aria-label="Move right">▶</button>
+      </div>
+      <div class="touch-group">
+        <button class="tbtn small" type="button" data-act="hold" aria-label="Hold piece">Hold</button>
+        <button class="tbtn" type="button" data-act="rotate" aria-label="Rotate piece">⟳</button>
+        <button class="tbtn small" type="button" data-act="drop" aria-label="Hard drop">Drop</button>
+      </div>
+    </nav>
+
+    <footer class="statusbar">
+      <span class="pad-status" id="pad-status">
+        <span class="dot"></span><span id="pad-label">No controller</span>
+      </span>
+      <span class="tip tip-keys">← → move · ↑ rotate · Space drop · C hold · B undo</span>
+      <span class="tip tip-touch">Swipe the board or use the buttons below</span>
+    </footer>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
